@@ -1,5 +1,7 @@
-const express = require("express");
-const fs = require("fs");
+import express from 'express';
+import { stat } from 'fs/promises';
+import { createReadStream } from 'fs';
+import { fileURLToPath } from 'url';
 
 const app = express();
 
@@ -26,31 +28,24 @@ app.get("/live", (req, res) => {
 // Registers a HTTP GET route for video streaming.
 //
 app.get("/video", async (req, res) => { // Route for streaming video.
-    
+
     const videoPath = "./videos/SampleVideo_1280x720_1mb.mp4";
-    const stats = await fs.promises.stat(videoPath);
+    const stats = await stat(videoPath);
 
     res.writeHead(200, {
         "Content-Length": stats.size,
         "Content-Type": "video/mp4",
     });
-    fs.createReadStream(videoPath).pipe(res);
+
+    createReadStream(videoPath).pipe(res);
 });
 
-if (require.main === module) {
-    //
-    // When this script is run as the entry point, starts the HTTP server.
-    //
-    app.listen(PORT, () => {
-        console.log(`Microservice online.`);
-    });
-}
-else {
-    //
-    // Otherwise, exports the express app object for use in tests.
-    //
-    module.exports = {
-        app,
-    };
-}
+// if (fileURLToPath(import.meta.url) === process.argv[1])
+//
+// Starts the HTTP server.
+//
+const server = app.listen(PORT, () => {
+    console.log(`Microservice online:` + PORT);
+});
 
+export { app, server };
