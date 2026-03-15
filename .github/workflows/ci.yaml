@@ -7,11 +7,7 @@ on:
   push: 
     branches:
       - main
-
-  #
-  # Allows deployment to be invoked manually through the GitHub Actions user interface.
-  #
-  workflow_dispatch: 
+ 
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
